@@ -36,15 +36,18 @@ export default function Page() {
         <div className="flex justify-between items-center">
           <Link href={"/"}>
             <Image
-              src={assets.logo}
+              src={assets.Dealers_Codex_Logo}
               width={180}
               alt="Site Logo"
               className="w-[130px] sm:w-auto"
             />
           </Link>
-          <button className="flex items-center gap-2 font-medium py-1 px-3 sm:py-3 sm:px-6 border border-black shadow-[-7px_7px_0px_#000000]">
-            Get Started <Image src={assets.arrow} alt="Arrow" />
-          </button>
+          <a href="mailto:thegamemasterofhaosu@gmail.com">
+  <button className="flex items-center gap-2 font-medium py-1 px-3 sm:py-3 sm:px-6 border border-black shadow-[-7px_7px_0px_#000000]">
+    Contact Me, If You Care To Make A Deal <Image src={assets.arrow} alt="Arrow" />
+  </button>
+</a>
+
         </div>
 
         <div className="text-center my-24">

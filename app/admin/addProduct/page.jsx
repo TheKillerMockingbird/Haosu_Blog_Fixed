@@ -14,7 +14,7 @@ const page = () => {
             description:"",
             category:"Startup",
             author:"Judah Olson",
-            authorImg:"/author_img.png"
+            authorImg:"/author_img_v2.png"
         })
 
         const onChangeHandler = (event) =>{
@@ -42,7 +42,7 @@ const page = () => {
             description:"",
             category:"Startup",
             author:"Judah Olson",
-            authorImg:"/author_img.png"
+            authorImg:"/author_img_v2.png"
         });
             }
             else{

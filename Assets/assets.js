@@ -17,7 +17,7 @@ import blog_pic_16 from './blog_pic_16.png';
 import facebook_icon from './facebook_icon.png'
 import googleplus_icon from './googleplus_icon.png'
 import twitter_icon from './twitter_icon.png'
-import profile_icon from './profile_icon.png'
+import profile_icon_v2 from './profile_icon_v2.png'
 import logo from './logo.png'
 import arrow from './arrow.png'
 import logo_light from './logo_light.png'
@@ -25,19 +25,23 @@ import blog_icon from './blog_icon.png'
 import add_icon from './add_icon.png'
 import email_icon from './email_icon.png'
 import upload_area from './upload_area.png'
+import Dealers_Codex_Logo from './Dealers_Codex_Logo.png'
+import Dealers_Codex_Logo_Footer from './Dealers_Codex_Logo_Footer.png'
 
 export const assets = {
     facebook_icon,
     googleplus_icon,
     twitter_icon,
-    profile_icon,
+    profile_icon_v2,
     logo,
     arrow,
     logo_light,
     blog_icon,
     add_icon,
     email_icon,
-    upload_area
+    upload_area,
+    Dealers_Codex_Logo,
+    Dealers_Codex_Logo_Footer
     }
 
     export const blog_data = [{
@@ -48,7 +52,7 @@ export const assets = {
         date:Date.now(),
         category:"Lifestyle",
         author:"Alex Bennett",
-        author_img:profile_icon
+        author_img:profile_icon_v2
     },
     {
         id:2,
@@ -58,7 +62,7 @@ export const assets = {
         date:Date.now(),
         category:"Startup",
         author:"Alex Bennett",
-        author_img:profile_icon
+        author_img:profile_icon_v2
     },
     {
         id:3,
@@ -68,7 +72,7 @@ export const assets = {
         date:Date.now(),
         category:"Technology",
         author:"Alex Bennett",
-        author_img:profile_icon
+        author_img:profile_icon_v2
     },
     {
         id:4,
@@ -78,7 +82,7 @@ export const assets = {
         date:Date.now(),
         category:"Technology",
         author:"Alex Bennett",
-        author_img:profile_icon
+        author_img:profile_icon_v2
     },
     {
         id:5,
@@ -88,7 +92,7 @@ export const assets = {
         date:Date.now(),
         category:"Lifestyle",
         author:"Alex Bennett",
-        author_img:profile_icon
+        author_img:profile_icon_v2
     },
     {
         id:6,
@@ -98,7 +102,7 @@ export const assets = {
         date:Date.now(),
         category:"Startup",
         author:"Alex Bennett",
-        author_img:profile_icon
+        author_img:profile_icon_v2
     },
     {
         id:7,
@@ -108,7 +112,7 @@ export const assets = {
         date:Date.now(),
         category:"Technology",
         author:"Alex Bennett",
-        author_img:profile_icon
+        author_img:profile_icon_v2
     },
     {
         id:8,
@@ -118,7 +122,7 @@ export const assets = {
         date:Date.now(),
         category:"Lifestyle",
         author:"Alex Bennett",
-        author_img:profile_icon
+        author_img:profile_icon_v2
     },
     {
         id:9,
@@ -128,7 +132,7 @@ export const assets = {
         date:Date.now(),
         category:"Startup",
         author:"Alex Bennett",
-        author_img:profile_icon
+        author_img:profile_icon_v2
     },
     {
         id:10,
@@ -138,7 +142,7 @@ export const assets = {
         date:Date.now(),
         category:"Lifestyle",
         author:"Alex Bennett",
-        author_img:profile_icon
+        author_img:profile_icon_v2
     },
     {
         id:11,
@@ -148,7 +152,7 @@ export const assets = {
         date:Date.now(),
         category:"Startup",
         author:"Alex Bennett",
-        author_img:profile_icon
+        author_img:profile_icon_v2
     },
     {
         id:12,
@@ -158,7 +162,7 @@ export const assets = {
         date:Date.now(),
         category:"Technology",
         author:"Alex Bennett",
-        author_img:profile_icon
+        author_img:profile_icon_v2
     },
     {
         id:13,
@@ -168,7 +172,7 @@ export const assets = {
         date:Date.now(),
         category:"Startup",
         author:"Alex Bennett",
-        author_img:profile_icon
+        author_img:profile_icon_v2
     },
     {
         id:14,
@@ -178,7 +182,7 @@ export const assets = {
         date:Date.now(),
         category:"Lifestyle",
         author:"Alex Bennett",
-        author_img:profile_icon
+        author_img:profile_icon_v2
     },
     {
         id:15,
@@ -188,7 +192,7 @@ export const assets = {
         date:Date.now(),
         category:"Technology",
         author:"Alex Bennett",
-        author_img:profile_icon
+        author_img:profile_icon_v2
     },
     {
         id:16,
@@ -198,6 +202,6 @@ export const assets = {
         date:Date.now(),
         category:"Startup",
         author:"Alex Bennett",
-        author_img:profile_icon
+        author_img:profile_icon_v2
     },
 ]

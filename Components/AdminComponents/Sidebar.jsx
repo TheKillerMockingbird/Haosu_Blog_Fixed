@@ -7,7 +7,7 @@ const Sidebar = () => {
   return (
     <div className='flex flex-col bg-slate-100'>
             <div className='px-s sm:pl-14 py-3 border border-black'>
-                <Image src={assets.logo} width={120} alt='' />
+                <Image src={assets.Dealers_Codex_Logo} width={120} alt='' />
             </div>
             <div className='w-28 sm:w-80 h-[100vh] relative py-12 border border-black'>
                 <div className='w-[50%] sm:w-[80%] absolute right-0'>

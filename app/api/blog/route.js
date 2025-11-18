@@ -1,17 +1,22 @@
-import { ConnectDB } from "@/lib/config/db";
+import connectDB from "@/lib/config/db";
 import BlogModel from "@/lib/models/BlogModel";
 import { writeFile } from "fs/promises";
-import { NextResponse } from "next/server"; // ✅ Import this directly (no require)
-const fs = require('fs')
+import { NextResponse } from "next/server";
+import fs from "fs"; // ✅ Use ES module import instead of require (Next.js prefers this)
 
-// Connect to DB on load
-const LoadDB = async () => {
-  await ConnectDB();
-};
-LoadDB();
+// ✅ Connect to MongoDB inside each request handler (not at file load time)
+async function ensureDB() {
+  try {
+    await connectDB();
+  } catch (error) {
+    console.error("❌ Database connection failed:", error);
+  }
+}
 
 // ✅ GET — fetch single blog or all blogs
 export async function GET(request) {
+  await ensureDB(); // <-- ensures DB is ready each time
+
   const blogId = request.nextUrl.searchParams.get("id");
 
   try {
@@ -23,6 +28,7 @@ export async function GET(request) {
       return NextResponse.json(blog);
     } else {
       const blogs = await BlogModel.find({});
+      console.log("✅ API fetched blogs:", blogs);
       return NextResponse.json({ blogs });
     }
   } catch (error) {
@@ -33,6 +39,8 @@ export async function GET(request) {
 
 // ✅ POST — upload and save new blog
 export async function POST(request) {
+  await ensureDB(); // <-- connect before writing
+
   try {
     const formData = await request.formData();
     const timestamp = Date.now();
@@ -59,16 +67,30 @@ export async function POST(request) {
     return NextResponse.json({ success: true, msg: "Blog Added" });
   } catch (error) {
     console.error("POST /api/blog error:", error);
-    return NextResponse.json({ success: false, msg: "Failed to add blog" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, msg: "Failed to add blog" },
+      { status: 500 }
+    );
   }
 }
 
-// Creating API endpoint to delete blog
+// ✅ DELETE — remove blog by ID and delete its image file
+export async function DELETE(request) {
+  await ensureDB(); // <-- connect before deleting
 
-export async function DELETE(request){
-    const id = await request.nextUrl.searchParams.get('id');
+  try {
+    const id = request.nextUrl.searchParams.get("id");
     const blog = await BlogModel.findById(id);
-    fs.unlink(`./public${blog.image}`,()=>{});
+    if (!blog) {
+      return NextResponse.json({ error: "Blog not found" }, { status: 404 });
+    }
+
+    fs.unlink(`./public${blog.image}`, () => {});
     await BlogModel.findByIdAndDelete(id);
-    return NextResponse.json({msg:"Blog Deleted"})
+
+    return NextResponse.json({ msg: "Blog Deleted" });
+  } catch (error) {
+    console.error("DELETE /api/blog error:", error);
+    return NextResponse.json({ error: "Failed to delete blog" }, { status: 500 });
+  }
 }

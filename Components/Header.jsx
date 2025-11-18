@@ -25,8 +25,12 @@ const Header = () => {
     return (
         <div className='py-5 px-5 md:px-12 lg:px-28'>
           <div className='flex justify-between items center'>
-              <Image src={assets.logo} width={160} alt='' className='w-[160px] sm:w-[160px]'/>
-              <button className='flex items-center gap-2 font-medium py-1 px-3 sm:py-3 sm:px-6 border border-solid border-black shadow-[-7px_7px_0px_#000000]'>Get started <Image src={assets.arrow} alt=''></Image></button>
+              <Image src={assets.Dealers_Codex_Logo} width={160} alt='' className='w-[160px] sm:w-[160px]'/>
+              <a href="mailto:thegamemasterofhaosu@gmail.com">
+                <button className="flex items-center gap-2 font-medium py-1 px-3 sm:py-3 sm:px-6 border border-black shadow-[-7px_7px_0px_#000000]">
+                  Contact Me, If You Care To Make A Deal <Image src={assets.arrow} alt="Arrow" />
+                </button>
+              </a>
           </div>
           <div className='text-center my-8'>
             <h1 className='text-3xl sm:text-5xl font-medium'>Latest Posts</h1>
