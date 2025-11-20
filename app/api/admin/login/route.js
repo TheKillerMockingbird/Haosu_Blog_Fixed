@@ -1,3 +1,4 @@
+// app/api/admin/login/route.js
 import { NextResponse } from "next/server";
 
 let attempts = 0;
@@ -10,7 +11,6 @@ export async function POST(req) {
   const password = body.password;
   const correct = process.env.ADMIN_PASSWORD;
 
-  // Too many attempts?
   if (lockedUntil && lockedUntil > Date.now()) {
     return NextResponse.json(
       { error: "Too many attempts. Try again later." },
@@ -18,14 +18,13 @@ export async function POST(req) {
     );
   }
 
-  // Correct password
   if (password === correct) {
     attempts = 0;
     lockedUntil = null;
 
     const res = NextResponse.json({ success: true });
 
-    // Set proper auth cookie
+    // server-only httpOnly cookie (secure + strict)
     res.cookies.set("admin_auth", "true", {
       httpOnly: true,
       path: "/",
@@ -37,12 +36,8 @@ export async function POST(req) {
     return res;
   }
 
-  // Wrong password
   attempts++;
-
-  if (attempts >= MAX_ATTEMPTS) {
-    lockedUntil = Date.now() + LOCK_TIME;
-  }
+  if (attempts >= MAX_ATTEMPTS) lockedUntil = Date.now() + LOCK_TIME;
 
   return NextResponse.json({ error: "Incorrect password" }, { status: 401 });
 }
