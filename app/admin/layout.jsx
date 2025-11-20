@@ -7,9 +7,9 @@ import { assets } from "@/Assets/assets";
 import { useEffect, useState } from "react";
 
 export default function Layout({ children }) {
+  const [authChecked, setAuthChecked] = useState(false);
   const [isAuth, setIsAuth] = useState(false);
 
-  // Check auth cookie on client
   useEffect(() => {
     const cookie = document.cookie
       .split("; ")
@@ -20,14 +20,25 @@ export default function Layout({ children }) {
     } else {
       window.location.href = "/admin/login";
     }
+
+    setAuthChecked(true);
   }, []);
+
+  // Don't render layout until auth check finishes
+  if (!authChecked) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-lg">Loading admin panel...</p>
+      </div>
+    );
+  }
+
+  if (!isAuth) return null;
 
   async function logout() {
     await fetch("/api/admin/logout", { method: "POST" });
     window.location.href = "/admin/login";
   }
-
-  if (!isAuth) return null;
 
   return (
     <>
