@@ -4,21 +4,30 @@ import { useState } from "react";
 export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function handleLogin(e) {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
-    const res = await fetch("/api/admin/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+        credentials: "same-origin",
+      });
 
-    if (res.ok) {
-      window.location.href = "/admin";
-    } else {
-      setError("Incorrect password.");
+      if (res.ok) {
+        window.location.href = "/admin";
+      } else {
+        setError("Incorrect password.");
+      }
+    } catch (err) {
+      setError("Network error. Try again.");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -40,8 +49,12 @@ export default function LoginPage() {
 
         {error && <p className="text-red-500 mb-2">{error}</p>}
 
-        <button type="submit" className="w-full bg-black text-white py-2 rounded">
-          Login
+        <button
+          type="submit"
+          className="w-full bg-black text-white py-2 rounded disabled:opacity-50"
+          disabled={loading}
+        >
+          {loading ? "Logging in..." : "Login"}
         </button>
       </form>
     </div>
