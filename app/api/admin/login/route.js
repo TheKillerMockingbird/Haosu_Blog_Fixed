@@ -1,15 +1,16 @@
 import { NextResponse } from "next/server";
 
 let attempts = 0;
-const MAX_ATTEMPTS = 10;      // Brute force protection
-const LOCK_TIME = 1000 * 60 * 5; // 5 min lock
-
+const MAX_ATTEMPTS = 10;
+const LOCK_TIME = 1000 * 60 * 5; // 5 minutes
 let lockedUntil = null;
 
 export async function POST(req) {
   const body = await req.json();
+  const password = body.password;
+  const correct = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
 
-  // Check lock
+  // Too many attempts?
   if (lockedUntil && lockedUntil > Date.now()) {
     return NextResponse.json(
       { error: "Too many attempts. Try again later." },
@@ -17,14 +18,14 @@ export async function POST(req) {
     );
   }
 
-  const password = body.password;
-  const correctPassword = process.env.ADMIN_PASSWORD;
-
-  if (password === correctPassword) {
+  // Correct password
+  if (password === correct) {
     attempts = 0;
     lockedUntil = null;
 
     const res = NextResponse.json({ success: true });
+
+    // Set cookie to indicate login
     res.cookies.set("admin-auth", "yes", {
       httpOnly: true,
       path: "/",
@@ -34,8 +35,9 @@ export async function POST(req) {
     return res;
   }
 
-  // wrong password
+  // Wrong password
   attempts++;
+
   if (attempts >= MAX_ATTEMPTS) {
     lockedUntil = Date.now() + LOCK_TIME;
   }
