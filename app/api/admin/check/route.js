@@ -1,24 +1,16 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
+export async function GET() {
+  try {
+    const cookieStore = cookies();
+    const authCookie = cookieStore.get("admin_auth");
 
-export async function GET(req) {
-try {
-const cookieHeader = req.headers.get("cookie") || "";
-const cookies = Object.fromEntries(
-cookieHeader
-.split("; ")
-.filter(Boolean)
-.map((c) => {
-const idx = c.indexOf("=");
-return [c.slice(0, idx), c.slice(idx + 1)];
-})
-);
+    const isAuth = authCookie?.value === "true";
 
-
-const isAuth = cookies["admin_auth"] === "true";
-return NextResponse.json({ auth: !!isAuth });
-} catch (err) {
-console.error("auth check error", err);
-return NextResponse.json({ auth: false });
-}
+    return NextResponse.json({ auth: isAuth });
+  } catch (err) {
+    console.error("auth check error", err);
+    return NextResponse.json({ auth: false });
+  }
 }
