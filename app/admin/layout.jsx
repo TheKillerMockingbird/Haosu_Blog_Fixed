@@ -1,24 +1,33 @@
-import { cookies } from "next/headers";
+"use client";
+
 import Sidebar from "@/Components/AdminComponents/Sidebar";
 import Image from "next/image";
 import { ToastContainer } from "react-toastify";
-import { redirect } from "next/navigation";
 import { assets } from "@/Assets/assets";
+import { useEffect, useState } from "react";
 
 export default function Layout({ children }) {
-  const cookieStore = cookies();
-  const isAuth = cookieStore.get("admin_auth")?.value === "true";
+  const [isAuth, setIsAuth] = useState(false);
 
-  if (!isAuth) {
-    redirect("/admin/login");
-  }
+  // Check auth cookie on client
+  useEffect(() => {
+    const cookie = document.cookie
+      .split("; ")
+      .find((c) => c.startsWith("admin_auth="));
+
+    if (cookie && cookie.endsWith("true")) {
+      setIsAuth(true);
+    } else {
+      window.location.href = "/admin/login";
+    }
+  }, []);
 
   async function logout() {
-    "use server";
-    // clears cookie
-    cookies().set("admin_auth", "", { maxAge: 0, path: "/" });
-    redirect("/admin/login");
+    await fetch("/api/admin/logout", { method: "POST" });
+    window.location.href = "/admin/login";
   }
+
+  if (!isAuth) return null;
 
   return (
     <>
@@ -29,18 +38,12 @@ export default function Layout({ children }) {
           <div className="flex items-center justify-between w-full py-3 max-h-[60px] px-12 border-b border-black">
             <h3 className="font-medium">Admin Panel</h3>
 
-            {/* Logout button */}
-            <form action={logout}>
-              <button
-                type="submit"
-                className="border px-3 py-1 rounded"
-              >
-                Logout
-              </button>
-            </form>
-
-            {/* Profile Icon */}
-            {/* <Image src={assets.profile_icon_v2} width={40} alt="" /> */}
+            <button
+              onClick={logout}
+              className="border px-3 py-1 rounded"
+            >
+              Logout
+            </button>
           </div>
 
           {children}
