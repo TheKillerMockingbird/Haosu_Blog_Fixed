@@ -8,7 +8,7 @@ let lockedUntil = null;
 export async function POST(req) {
   const body = await req.json();
   const password = body.password;
-  const correct = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+  const correct = process.env.ADMIN_PASSWORD;
 
   // Too many attempts?
   if (lockedUntil && lockedUntil > Date.now()) {
