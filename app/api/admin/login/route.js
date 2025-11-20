@@ -18,7 +18,7 @@ export async function POST(req) {
   }
 
   const password = body.password;
-  const correctPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+  const correctPassword = process.env.ADMIN_PASSWORD;
 
   if (password === correctPassword) {
     attempts = 0;
