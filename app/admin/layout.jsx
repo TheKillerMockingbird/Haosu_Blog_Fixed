@@ -5,23 +5,14 @@ import Sidebar from "@/Components/AdminComponents/Sidebar";
 import { ToastContainer } from "react-toastify";
 
 export default function AdminLayout({ children }) {
-  const pathname = typeof window === "undefined" ? "" : window.location.pathname;
   const cookieStore = cookies();
   const auth = cookieStore.get("admin_auth");
 
-  const isLoginPage = pathname === "/admin/login";
-
-  // Protect admin pages, but NOT /admin/login
-  if (!auth?.value && !isLoginPage) {
+  // protect admin routes (login has its own layout now)
+  if (!auth?.value) {
     redirect("/admin/login");
   }
 
-  // LOGIN PAGE: no sidebar, no header
-  if (isLoginPage) {
-    return <>{children}</>;
-  }
-
-  // AUTHENTICATED ADMIN PAGES: show sidebar + header
   return (
     <div className="flex">
       <ToastContainer theme="dark" />
@@ -36,9 +27,7 @@ export default function AdminLayout({ children }) {
           </form>
         </div>
 
-        <div className="p-6">
-          {children}
-        </div>
+        <div className="p-6">{children}</div>
       </div>
     </div>
   );
