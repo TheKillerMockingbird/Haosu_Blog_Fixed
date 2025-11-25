@@ -17,10 +17,11 @@
   "react-dom": "18.2.0",
   "react-toastify": "^11.0.5"
 },
- "devDependencies": {
+  "devDependencies": {
   "@tailwindcss/postcss": "^4",
-  "eslint": "^8.56.0",
+  "eslint": "^9",
   "eslint-config-next": "14.2.10",
   "tailwindcss": "^4"
 }
+
 }
