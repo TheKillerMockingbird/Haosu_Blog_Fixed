@@ -1,7 +1,9 @@
 "use client";
 
 import Sidebar from "@/Components/AdminComponents/Sidebar";
+import Image from "next/image";
 import { ToastContainer } from "react-toastify";
+import { assets } from "@/Assets/assets";
 import { useEffect, useState } from "react";
 
 export default function Layout({ children }) {
@@ -9,39 +11,20 @@ export default function Layout({ children }) {
   const [isAuth, setIsAuth] = useState(false);
 
   useEffect(() => {
-    let mounted = true;
+    const cookie = document.cookie
+      .split("; ")
+      .find((c) => c.startsWith("admin_auth="));
 
-    async function checkAuth() {
-      try {
-        // ensure credentials are included (same-origin)
-        const res = await fetch("/api/admin/check", {
-          method: "GET",
-          credentials: "same-origin",
-        });
-        const json = await res.json();
-        if (!mounted) return;
-        setIsAuth(!!json.auth);
-        setAuthChecked(true);
-        if (!json.auth) {
-          // only redirect after check is complete
-          window.location.href = "/admin/login";
-        }
-      } catch (err) {
-        console.error("auth check failed", err);
-        if (mounted) {
-          setIsAuth(false);
-          setAuthChecked(true);
-          window.location.href = "/admin/login";
-        }
-      }
+    if (cookie && cookie.endsWith("true")) {
+      setIsAuth(true);
+    } else {
+      window.location.href = "/admin/login";
     }
 
-    checkAuth();
-    return () => {
-      mounted = false;
-    };
+    setAuthChecked(true);
   }, []);
 
+  // Don't render layout until auth check finishes
   if (!authChecked) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -53,25 +36,30 @@ export default function Layout({ children }) {
   if (!isAuth) return null;
 
   async function logout() {
-    await fetch("/api/admin/logout", { method: "POST", credentials: "same-origin" });
+    await fetch("/api/admin/logout", { method: "POST" });
     window.location.href = "/admin/login";
   }
 
   return (
-    <div className="flex">
-      <ToastContainer theme="dark" />
-      <Sidebar />
-      <div className="flex flex-col w-full">
-        <div className="flex items-center justify-between w-full py-3 max-h-[60px] px-12 border-b border-black">
-          <h3 className="font-medium">Admin Panel</h3>
+    <>
+      <div className="flex">
+        <ToastContainer theme="dark" />
+        <Sidebar />
+        <div className="flex flex-col w-full">
+          <div className="flex items-center justify-between w-full py-3 max-h-[60px] px-12 border-b border-black">
+            <h3 className="font-medium">Admin Panel</h3>
 
-          <button onClick={logout} className="border px-3 py-1 rounded">
-            Logout
-          </button>
+            <button
+              onClick={logout}
+              className="border px-3 py-1 rounded"
+            >
+              Logout
+            </button>
+          </div>
+
+          {children}
         </div>
-
-        {children}
       </div>
-    </div>
+    </>
   );
 }
