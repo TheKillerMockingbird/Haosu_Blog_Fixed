@@ -1,16 +1,10 @@
 import connectDB from "@/lib/config/db";
 import BlogModel from "@/lib/models/BlogModel";
+import { writeFile } from "fs/promises";
 import { NextResponse } from "next/server";
-import { v2 as cloudinary } from "cloudinary";
+import fs from "fs"; // ✅ Use ES module import instead of require (Next.js prefers this)
 
-// 🔧 Cloudinary Config (reads from Vercel env vars)
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-// Ensure Database Connection
+// ✅ Connect to MongoDB inside each request handler (not at file load time)
 async function ensureDB() {
   try {
     await connectDB();
@@ -19,19 +13,22 @@ async function ensureDB() {
   }
 }
 
-// --------------------- GET ---------------------
+// ✅ GET — fetch single blog or all blogs
 export async function GET(request) {
-  await ensureDB();
+  await ensureDB(); // <-- ensures DB is ready each time
 
   const blogId = request.nextUrl.searchParams.get("id");
 
   try {
     if (blogId) {
       const blog = await BlogModel.findById(blogId);
-      if (!blog) return NextResponse.json({ error: "Blog not found" }, { status: 404 });
+      if (!blog) {
+        return NextResponse.json({ error: "Blog not found" }, { status: 404 });
+      }
       return NextResponse.json(blog);
     } else {
       const blogs = await BlogModel.find({});
+      console.log("✅ API fetched blogs:", blogs);
       return NextResponse.json({ blogs });
     }
   } catch (error) {
@@ -40,84 +37,55 @@ export async function GET(request) {
   }
 }
 
-// --------------------- POST ---------------------
+// ✅ POST — upload and save new blog
 export async function POST(request) {
-  await ensureDB();
+  await ensureDB(); // <-- connect before writing
 
   try {
     const formData = await request.formData();
+    const timestamp = Date.now();
 
-    // 1. Get uploaded image
     const image = formData.get("image");
-    let cloudinaryUrl = "";
+    const imageByteData = await image.arrayBuffer();
+    const buffer = Buffer.from(imageByteData);
+    const path = `./public/${timestamp}_${image.name}`;
+    await writeFile(path, buffer);
+    const imgUrl = `/${timestamp}_${image.name}`;
 
-    if (image) {
-      const arrayBuffer = await image.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-
-      // Upload to Cloudinary
-      const uploadRes = await cloudinary.uploader.upload_stream(
-        { folder: "haosu_blog" },
-        (error, result) => {
-          if (error) console.error("Cloudinary Upload Error:", error);
-        }
-      );
-
-      // Convert Buffer to stream
-      await new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          { folder: "haosu_blog" },
-          (error, result) => {
-            if (error) reject(error);
-            else {
-              cloudinaryUrl = result.secure_url;
-              resolve(result);
-            }
-          }
-        );
-        stream.end(buffer);
-      });
-    }
-
-    // 2. Build database object
     const blogData = {
       title: formData.get("title"),
       description: formData.get("description"),
       category: formData.get("category"),
       author: formData.get("author"),
-      image: cloudinaryUrl, // <-- Cloudinary URL instead of local file
+      image: imgUrl,
       authorImg: formData.get("authorImg"),
     };
 
     await BlogModel.create(blogData);
+    console.log("✅ Blog Saved");
 
     return NextResponse.json({ success: true, msg: "Blog Added" });
   } catch (error) {
     console.error("POST /api/blog error:", error);
-    return NextResponse.json({ success: false, msg: "Failed to add blog" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, msg: "Failed to add blog" },
+      { status: 500 }
+    );
   }
 }
 
-// --------------------- DELETE ---------------------
+// ✅ DELETE — remove blog by ID and delete its image file
 export async function DELETE(request) {
-  await ensureDB();
+  await ensureDB(); // <-- connect before deleting
 
   try {
     const id = request.nextUrl.searchParams.get("id");
     const blog = await BlogModel.findById(id);
-
     if (!blog) {
       return NextResponse.json({ error: "Blog not found" }, { status: 404 });
     }
 
-    // Try to delete from Cloudinary (ignores failure)
-    try {
-      const publicId = blog.image.split("/").pop().split(".")[0];
-      await cloudinary.uploader.destroy(`haosu_blog/${publicId}`);
-    } catch (cloudErr) {
-      console.warn("Cloudinary delete skipped:", cloudErr);
-    }
-
+    fs.unlink(`./public${blog.image}`, () => {});
     await BlogModel.findByIdAndDelete(id);
 
     return NextResponse.json({ msg: "Blog Deleted" });
