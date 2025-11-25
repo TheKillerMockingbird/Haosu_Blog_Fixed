@@ -11,12 +11,11 @@ export default function LoginPage() {
 
     const res = await fetch("/api/admin/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password }),
     });
 
     if (res.ok) {
-      window.location.href = "/admin";
+      window.location.href = "/admin"; // redirect to panel
     } else {
       setError("Incorrect password.");
     }
@@ -40,7 +39,10 @@ export default function LoginPage() {
 
         {error && <p className="text-red-500 mb-2">{error}</p>}
 
-        <button type="submit" className="w-full bg-black text-white py-2 rounded">
+        <button
+          type="submit"
+          className="w-full bg-black text-white py-2 rounded"
+        >
           Login
         </button>
       </form>
