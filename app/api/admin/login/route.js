@@ -25,13 +25,11 @@ export async function POST(req) {
 
     const res = NextResponse.json({ success: true });
 
-    // Set proper auth cookie
-    res.cookies.set("admin_auth", "true", {
+    // Set cookie to indicate login
+    res.cookies.set("admin-auth", "yes", {
       httpOnly: true,
       path: "/",
       maxAge: 60 * 60, // 1 hour
-      secure: true,
-      sameSite: "strict",
     });
 
     return res;
