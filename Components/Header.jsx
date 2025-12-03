@@ -33,8 +33,8 @@ const Header = () => {
               </a>
           </div>
           <div className='text-center my-8'>
-            <h1 className='text-3xl sm:text-5xl font-medium'>Latest Posts</h1>
-            <p className='mt-10 max-w-[740px] m-auto text-xs sm:text-base'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde mollitia pariatur et ex adipisci quisquam commodi voluptates facere, repellendus consectetur necessitatibus cupiditate facilis? Reiciendis, nesciunt architecto nulla numquam eaque eius.</p>
+            <h1 className='text-3xl sm:text-5xl font-medium'>Behold the Codex</h1>
+            <p className='mt-10 max-w-[740px] m-auto text-xs sm:text-base'>Welcome to the House, Strand. What brings you here? Is it the desire for power? Knowledge? Or something else? Well, I am The Gamemaster, and for now I will be your guide. So, are we going to make a deal, or should we simply begin with a a story?</p>
             <form onSubmit={onSubmitHandler} className='flex justify-between max-w-[500px] scale-75 sm:scale-100 mx-auto mt-10 border border-black shadow-[-7px_7px_0px_#000000]' action="">
                 <input onChange={(e)=>setEmail(e.target.value)} value={email} type="email" placeholder='Enter your email' className='pl-4 outline-none' />
                 <button type='submit' className='border-1 border-black py-4 px-4 sm:px-8 active:bg-gray-600 active:text-white'>Subscribe</button>
